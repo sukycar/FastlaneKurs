@@ -1,0 +1,132 @@
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Register new app"
+  lane :register_app do
+    produce(app_name: "ChewChewTrainFastlaneLearning")
+  end
+
+  desc "Handle certificates and profile"
+  lane :get_dev_certs do
+    cert(development: true)
+    sigh(development: true)
+  end
+
+  desc "Match team development"
+  lane :sync_all_development do
+    sync_device_info
+    match(type: "development")
+  end
+
+  desc "Update iOS UDID's on the Developer Portal"
+  lane :sync_device_info do
+    register_devices(
+      devices_file: "fastlane/Devicefile"
+    )
+  end
+
+  desc "Upload build for testing"
+  lane :make_adhoc_build do
+    gym(
+      scheme: "ChewChewTrain",
+      output_directory: "build_AdHoc",
+      build_method: "ad-hoc"
+    )
+  end
+ 
+  desc "Build for App Store submission"
+  #sync team appstore creds
+  lane :build_appstore do
+    sync_signing_assets(type: "appstore") #Code signing uses words without -, as gym usses with -
+    increment_build_number
+    gym(
+      output_directory: "build_Appstore",
+      export_method: "app-store",
+      xcargs: "-allowProvisioningUpdates"
+    )
+  end
+  desc "Send build for test flight"
+  lane :distribute_to_appstore do
+    build_appstore
+    pilot(
+      changelog: "Version {lane_context[SharedValues::VERSION_NUMBER]}, Build {lane_context[SharedValues::BUILD_NUMBER]}"
+    )
+  end
+
+  desc "Send build to instalrr test"
+  lane :distribute_to_installr do
+    build_adhoc
+    installr(
+      api_token: "f382Skrw0GtmpadxtWenu2X67UMAuvC1",
+      notes: "Version {lane_context[SharedValues::VERSION_NUMBER]}, Build {lane_context[SharedValues::BUILD_NUMBER]}"
+    )
+  end
+
+  desc "Build for Ad Hoc submission"
+  lane :build_adhoc do
+    sync_signing_assets(type: "adhoc") #Code signing uses words without -, as gym usses with -
+    increment_build_number
+    gym(
+      output_directory: "build_AdHoc",
+      export_method: "ad-hoc",
+      xcargs: "-allowProvisioningUpdates"
+    )
+  end
+
+  desc "Sync team Code-Signing assets"
+  lane :sync_signing_assets do |options|
+    sync_device_info
+    selectedType = options[:type]
+    match(type: selectedType)
+  end
+
+  desc "Check your app for guideline errors and make snapshot"
+  lane :release do 
+    precheck
+    build_appstore
+    snapshot
+    frame_it
+    deliver
+  end
+
+  desc "Frame screenshots"
+  lane :frame_it do
+    frameit(path: "./fastlane/screenshots", silver: true)
+  end
+
+  desc "Delivering build to app store"
+  lane :deliver_it do
+    deliver(
+      ipa: "./build_AppStore/ChewChewTrain.ipa",
+      run_precheck_before_submit: false,
+      force: true
+    )
+    #for delivering build with metadata uncomment next lines
+    #deliver(
+      #ipa: "./build_AppStore/ChewChewTrain.ipa", #only this line if you want to be redirected to confirmation page
+      #force: true,
+      #submit_for_review: true
+    #)
+  end
+  
+  #playing arround
+  desc "Test lane for password input"
+  lane :input_password do
+    pw = UI.password("Your password please: ")
+    UI.message pw + " is a great password!!"
+  end
+
+  desc "Test lane for input"
+  lane :test do
+
+    name = UI.input("What's your name? ")
+
+    if UI.confirm("Are you '#{name}'?")
+      UI.success "Good to know"
+    else
+      UI.error "Oh no!"
+      next # don't continue
+    end
+  end
+end

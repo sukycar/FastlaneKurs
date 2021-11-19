@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.000313">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="01: precheck" time="18.880724">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="02: Switch to ios build_appstore lane" time="0.000504">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="03: Switch to ios sync_signing_assets lane" time="0.000868">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="04: Switch to ios sync_device_info lane" time="0.000251">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="05: register_devices" time="1.59129">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: match" time="16.668283">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: increment_build_number" time="1.018995">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: gym" time="30.329428">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: snapshot" time="352.383068">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: Switch to ios frame_it lane" time="0.000272">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: frameit" time="478.354655">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: deliver" time="719.181432">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>
